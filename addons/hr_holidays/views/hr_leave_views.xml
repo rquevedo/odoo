@@ -364,8 +364,11 @@
         <field name="mode">primary</field>
         <field name="priority">17</field>
         <field name="arch" type="xml">
-            <xpath expr="//group[@name='col_left']" position="attributes">
+            <!-- <xpath expr="//group[@name='col_left']" position="attributes">
                 <attribute name="colspan">5</attribute>
+            </xpath> -->
+            <xpath expr="//header" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
         </field>
     </record>
@@ -406,13 +409,13 @@
         <field name="priority">16</field>
         <field name="arch" type="xml">
             <field name="holiday_status_id" position="replace"/>
-            <div name="title" position="inside">
+            <!-- <div name="title" position="inside">
                 <h1 class="d-flex flex-row justify-content-between">
                     <field name="holiday_status_id" options="{'no_open': True}" context="{'from_manager_leave_form': True ,'employee_id': employee_id, 'default_date_from':date_from, 'default_date_to':date_to}"/>
                 </h1>
-            </div>
+            </div> -->
             <field name="employee_id" position="replace"/>
-            <label id="label_dates" position="before">
+            <!-- <label id="label_dates" position="before">
                     <field name="multi_employee" invisible="1" force_save="1"/>
                     <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
                         'invisible': ['|', '|', ('holiday_type', '!=', 'employee'), ('state', '!=', 'validate'), ('employee_id', '=', False)]
@@ -421,11 +424,11 @@
                         'required': [('holiday_type', '=', 'employee'), ('state', 'in', ('draft', 'cancel', 'refuse'))],
                         'invisible': ['|', ('holiday_type', '!=', 'employee'), '&amp;', ('state', '=', 'validate'), ('employee_id', '!=', False)],
                         }" widget="many2many_tags"/>
-            </label>
+            </label> -->
             <field name="name" position="replace"/>
-            <field name="user_id" position="before">
+            <!-- <field name="user_id" position="before">
                 <field name="name"/>
-            </field>
+            </field> -->
             <xpath expr="//group[@name='col_right']" position="replace">
                 <group>
                     <widget name="hr_leave_stats"/>

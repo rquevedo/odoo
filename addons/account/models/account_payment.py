@@ -638,7 +638,8 @@ class AccountPayment(models.Model):
         '''
         for pay in self:
             if not pay.payment_method_line_id:
-                raise ValidationError(_("Please define a payment method line on your payment."))
+                # raise ValidationError(_("Please define a payment method line on your payment."))
+                pass
 
     # -------------------------------------------------------------------------
     # LOW-LEVEL METHODS

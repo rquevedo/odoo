@@ -142,7 +142,7 @@ class SurveyQuestion(models.Model):
 
     # Conditional display
     is_conditional = fields.Boolean(
-        string='Conditional Display', copy=False, help="""If checked, this question will be displayed only 
+        string='Conditional Display', copy=False, help="""If checked, this question will be displayed only
         if the specified conditional answer have been selected in a previous question""")
     triggering_question_id = fields.Many2one(
         'survey.question', string="Triggering Question", copy=False, compute="_compute_triggering_question_id",
@@ -199,16 +199,17 @@ class SurveyQuestion(models.Model):
     def _compute_page_id(self):
         """Will find the page to which this question belongs to by looking inside the corresponding survey"""
         for question in self:
-            if question.is_page:
-                question.page_id = None
-            else:
-                page = None
-                for q in question.survey_id.question_and_page_ids.sorted():
-                    if q == question:
-                        break
-                    if q.is_page:
-                        page = q
-                question.page_id = page
+            # if question.is_page:
+            #     question.page_id = None
+            # else:
+            #     page = None
+            #     for q in question.survey_id.question_and_page_ids.sorted():
+            #         if q == question:
+            #             break
+            #         if q.is_page:
+            #             page = q
+            #     question.page_id = page
+            question.page_id = None
 
     @api.depends('question_type', 'validation_email')
     def _compute_save_as_email(self):
