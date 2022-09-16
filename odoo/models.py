@@ -3511,24 +3511,24 @@ Fields:
                 elif not (corecord.company_id <= company):
                     inconsistencies.append((record, name, corecord))
 
-        if inconsistencies:
-            lines = [_("Incompatible companies on records:")]
-            company_msg = _("- Record is company %(company)r and %(field)r (%(fname)s: %(values)s) belongs to another company.")
-            record_msg = _("- %(record)r belongs to company %(company)r and %(field)r (%(fname)s: %(values)s) belongs to another company.")
-            for record, name, corecords in inconsistencies[:5]:
-                if record._name == 'res.company':
-                    msg, company = company_msg, record
-                else:
-                    msg, company = record_msg, record.company_id
-                field = self.env['ir.model.fields']._get(self._name, name)
-                lines.append(msg % {
-                    'record': record.display_name,
-                    'company': company.display_name,
-                    'field': field.field_description,
-                    'fname': field.name,
-                    'values': ", ".join(repr(rec.display_name) for rec in corecords),
-                })
-            raise UserError("\n".join(lines))
+        # if inconsistencies:
+        #     lines = [_("Incompatible companies on records:")]
+        #     company_msg = _("- Record is company %(company)r and %(field)r (%(fname)s: %(values)s) belongs to another company.")
+        #     record_msg = _("- %(record)r belongs to company %(company)r and %(field)r (%(fname)s: %(values)s) belongs to another company.")
+        #     for record, name, corecords in inconsistencies[:5]:
+        #         if record._name == 'res.company':
+        #             msg, company = company_msg, record
+        #         else:
+        #             msg, company = record_msg, record.company_id
+        #         field = self.env['ir.model.fields']._get(self._name, name)
+        #         lines.append(msg % {
+        #             'record': record.display_name,
+        #             'company': company.display_name,
+        #             'field': field.field_description,
+        #             'fname': field.name,
+        #             'values': ", ".join(repr(rec.display_name) for rec in corecords),
+        #         })
+        #     raise UserError("\n".join(lines))
 
     @api.model
     def check_access_rights(self, operation, raise_exception=True):
@@ -3654,8 +3654,8 @@ Fields:
             for sub_ids in cr.split_for_in_conditions(self.ids):
                 # Check if the records are used as default properties.
                 refs = ['%s,%s' % (self._name, i) for i in sub_ids]
-                if Property.search([('res_id', '=', False), ('value_reference', 'in', refs)], limit=1):
-                    raise UserError(_('Unable to delete this document because it is used as a default property'))
+                # if Property.search([('res_id', '=', False), ('value_reference', 'in', refs)], limit=1):
+                #     raise UserError(_('Unable to delete this document because it is used as a default property'))
 
                 # Delete the records' properties.
                 Property.search([('res_id', 'in', refs)]).unlink()
@@ -4251,6 +4251,7 @@ Fields:
     def _compute_field_value(self, field):
         # This is for base automation, to have something to override to catch
         # the changes of values for stored compute fields.
+        print(field)
         if isinstance(field.compute, str):
             getattr(self, field.compute)()
         else:

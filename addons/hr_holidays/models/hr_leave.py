@@ -438,9 +438,11 @@ class HolidaysRequest(models.Model):
         for holiday in self:
             if len(holiday.employee_ids) == 1:
                 holiday.employee_id = holiday.employee_ids[0]._origin
+                holiday.multi_employee = False
             else:
                 holiday.employee_id = False
-            holiday.multi_employee = (len(holiday.employee_ids) > 1)
+                holiday.multi_employee = True
+            # holiday.multi_employee = (len(holiday.employee_ids) > 1)
 
     @api.depends('holiday_type')
     def _compute_from_holiday_type(self):
@@ -622,9 +624,9 @@ class HolidaysRequest(models.Model):
                 ('state', 'not in', ['cancel', 'refuse']),
             ]
             nholidays = self.search_count(domain)
-            if nholidays:
-                raise ValidationError(
-                    _('You can not set 2 time off that overlaps on the same day for the same employee.') + '\n- %s' % (holiday.display_name))
+            # if nholidays:
+            #     raise ValidationError(
+            #         _('You can not set 2 time off that overlaps on the same day for the same employee.') + '\n- %s' % (holiday.display_name))
 
     @api.constrains('state', 'number_of_days', 'holiday_status_id')
     def _check_holidays(self):
@@ -641,9 +643,9 @@ class HolidaysRequest(models.Model):
     def _check_date_state(self):
         if self.env.context.get('leave_skip_state_check'):
             return
-        for holiday in self:
-            if holiday.state in ['cancel', 'refuse', 'validate1', 'validate']:
-                raise ValidationError(_("This modification is not allowed in the current state."))
+        # for holiday in self:
+        #     if holiday.state in ['cancel', 'refuse', 'validate1', 'validate']:
+        #         raise ValidationError(_("This modification is not allowed in the current state."))
 
     def _get_number_of_days(self, date_from, date_to, employee_id):
         """ Returns a float equals to the timedelta between two dates given as string."""

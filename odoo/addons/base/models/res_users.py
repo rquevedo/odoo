@@ -463,12 +463,13 @@ class Users(models.Model):
     def _check_company(self):
         for user in self:
             if user.company_id not in user.company_ids:
-                raise ValidationError(
-                    _('Company %(company_name)s is not in the allowed companies for user %(user_name)s (%(company_allowed)s).',
-                      company_name=user.company_id.name,
-                      user_name=user.name,
-                      company_allowed=', '.join(user.mapped('company_ids.name')))
-                )
+                # raise ValidationError(
+                #     _('Company %(company_name)s is not in the allowed companies for user %(user_name)s (%(company_allowed)s).',
+                #       company_name=user.company_id.name,
+                #       user_name=user.name,
+                #       company_allowed=', '.join(user.mapped('company_ids.name')))
+                # )
+                pass
 
     @api.constrains('action_id')
     def _check_action_id(self):

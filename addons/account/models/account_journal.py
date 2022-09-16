@@ -434,8 +434,8 @@ class AccountJournal(models.Model):
         method_ids = [res[0] for res in self._cr.fetchall()]
         if method_ids:
             methods = self.env['account.payment.method'].browse(method_ids)
-            raise ValidationError(_("Some payment methods supposed to be unique already exists somewhere else.\n"
-                                    "(%s)", ', '.join([method.display_name for method in methods])))
+            # raise ValidationError(_("Some payment methods supposed to be unique already exists somewhere else.\n"
+            #                         "(%s)", ', '.join([method.display_name for method in methods])))
 
     @api.constrains('active')
     def _check_auto_post_draft_entries(self):

@@ -248,9 +248,11 @@ class HolidaysAllocation(models.Model):
         for allocation in self:
             if len(allocation.employee_ids) == 1:
                 allocation.employee_id = allocation.employee_ids[0]._origin
+                allocation.multi_employee = False
             else:
                 allocation.employee_id = False
-            allocation.multi_employee = (len(allocation.employee_ids) > 1)
+                allocation.multi_employee = True
+            # allocation.multi_employee = (len(allocation.employee_ids) > 1)
 
     @api.depends('holiday_type')
     def _compute_from_holiday_type(self):

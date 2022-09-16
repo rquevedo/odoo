@@ -412,37 +412,38 @@ class IrModel(models.Model):
         return CustomModel
 
     def _add_manual_models(self):
-        """ Add extra models to the registry. """
-        # clean up registry first
-        for name, Model in list(self.pool.items()):
-            if Model._custom:
-                del self.pool.models[name]
-                # remove the model's name from its parents' _inherit_children
-                for Parent in Model.__bases__:
-                    if hasattr(Parent, 'pool'):
-                        Parent._inherit_children.discard(name)
-        # add manual models
-        cr = self.env.cr
-        cr.execute('SELECT * FROM ir_model WHERE state=%s', ['manual'])
-        for model_data in cr.dictfetchall():
-            model_class = self._instanciate(model_data)
-            Model = model_class._build_model(self.pool, cr)
-            if tools.table_kind(cr, Model._table) not in ('r', None):
-                # not a regular table, so disable schema upgrades
-                Model._auto = False
-                cr.execute(
-                    '''
-                    SELECT a.attname
-                      FROM pg_attribute a
-                      JOIN pg_class t
-                        ON a.attrelid = t.oid
-                       AND t.relname = %s
-                     WHERE a.attnum > 0 -- skip system columns
-                    ''',
-                    [Model._table]
-                )
-                columns = {colinfo[0] for colinfo in cr.fetchall()}
-                Model._log_access = set(models.LOG_ACCESS_COLUMNS) <= columns
+        # """ Add extra models to the registry. """
+        # # clean up registry first
+        # for name, Model in list(self.pool.items()):
+        #     if Model._custom:
+        #         del self.pool.models[name]
+        #         # remove the model's name from its parents' _inherit_children
+        #         for Parent in Model.__bases__:
+        #             if hasattr(Parent, 'pool'):
+        #                 Parent._inherit_children.discard(name)
+        # # add manual models
+        # cr = self.env.cr
+        # cr.execute('SELECT * FROM ir_model WHERE state=%s', ['manual'])
+        # for model_data in cr.dictfetchall():
+        #     model_class = self._instanciate(model_data)
+        #     Model = model_class._build_model(self.pool, cr)
+        #     if tools.table_kind(cr, Model._table) not in ('r', None):
+        #         # not a regular table, so disable schema upgrades
+        #         Model._auto = False
+        #         cr.execute(
+        #             '''
+        #             SELECT a.attname
+        #               FROM pg_attribute a
+        #               JOIN pg_class t
+        #                 ON a.attrelid = t.oid
+        #                AND t.relname = %s
+        #              WHERE a.attnum > 0 -- skip system columns
+        #             ''',
+        #             [Model._table]
+        #         )
+        #         columns = {colinfo[0] for colinfo in cr.fetchall()}
+        #         Model._log_access = set(models.LOG_ACCESS_COLUMNS) <= columns
+        pass
 
 
 # retrieve field types defined by the framework only (not extensions)
@@ -1164,16 +1165,17 @@ class IrModelFields(models.Model):
             return fields.Field.by_type[field_data['ttype']](**attrs)
 
     def _add_manual_fields(self, model):
-        """ Add extra fields on model. """
-        fields_data = self._get_manual_field_data(model._name)
-        for name, field_data in fields_data.items():
-            if name not in model._fields and field_data['state'] == 'manual':
-                try:
-                    field = self._instanciate(field_data)
-                    if field:
-                        model._add_field(name, field)
-                except Exception:
-                    _logger.exception("Failed to load field %s.%s: skipped", model._name, field_data['name'])
+        # """ Add extra fields on model. """
+        # fields_data = self._get_manual_field_data(model._name)
+        # for name, field_data in fields_data.items():
+        #     if name not in model._fields and field_data['state'] == 'manual':
+        #         try:
+        #             field = self._instanciate(field_data)
+        #             if field:
+        #                 model._add_field(name, field)
+        #         except Exception:
+        #             _logger.exception("Failed to load field %s.%s: skipped", model._name, field_data['name'])
+        pass
 
 
 class IrModelSelection(models.Model):
@@ -1500,7 +1502,7 @@ class IrModelConstraint(models.Model):
         for data in self.sorted(key='id', reverse=True):
             name = tools.ustr(data.name)
             if data.model.model in self.env:
-                table = self.env[data.model.model]._table    
+                table = self.env[data.model.model]._table
             else:
                 table = data.model.model.replace('.', '_')
             typ = data.type
